@@ -9,8 +9,9 @@ public class RegisterSystems
 
         // Add your systems here
         
-        toRegister.Add(new CreateEntity());
+        toRegister.Add(new StartGame());
         toRegister.Add(new MoveEntity());
+        toRegister.Add(new ColorManager());
 
         return toRegister;
     }

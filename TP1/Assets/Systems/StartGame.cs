@@ -2,25 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public struct EntPosition: IComponent
+public class StartGame : ISystem
 {
-    public Dictionary<uint, Vector2> values;
-}
+    private bool once = true;
 
-public struct EntVitesse : IComponent
-{
-    public Dictionary<uint, Vector2> values;
-}
-
-public struct EntSize : IComponent
-{
-    public Dictionary<uint, int> values;
-}
-
-public class CreateEntity : ISystem
-{
-    public static Dictionary<string, IComponent> components = new Dictionary<string, IComponent>();
     public void UpdateSystem()
     {
         if (once)
@@ -30,32 +15,39 @@ public class CreateEntity : ISystem
             EntPosition entPosition = new EntPosition();
             EntVitesse entVitesse = new EntVitesse();
             EntSize entSize = new EntSize();
+            EntType entType = new EntType();
 
             entPosition.values = new Dictionary<uint, Vector2>();
             entVitesse.values = new Dictionary<uint, Vector2>();
             entSize.values = new Dictionary<uint, int>();
+            entType.values = new Dictionary<uint, EntityType>();
 
             uint id = 0;
-            components.Add("Position", entPosition);
-            components.Add("Vitesse", entVitesse);
-            components.Add("Size", entSize);
+            EntityManager.components.Add("Position", entPosition);
+            EntityManager.components.Add("Vitesse", entVitesse);
+            EntityManager.components.Add("Size", entSize);
+            EntityManager.components.Add("Type", entType);
 
 
             foreach (var tempShape in ECSManager.Instance.Config.circleInstancesToSpawn)
             {
                 entPosition.values.Add(id, tempShape.initialPosition);
                 entVitesse.values.Add(id, tempShape.initialVelocity);
+                if(tempShape.initialVelocity.x == 0 && tempShape.initialVelocity.y == 0)
+                {
+                    entType.values.Add(id, EntityType.Static);
+                }else
+                {
+                    entType.values.Add(id, EntityType.Dynamic);
+                }
                 entSize.values.Add(id, tempShape.initialSize);
                 ECSManager.Instance.CreateShape(id, tempShape.initialSize);
                 id++;
             }
-
         }
     }
 
-    private bool once = true;
-
-    private string name = "CreateEntity";
+    private string name = "StartGame";
 
     public string Name   // property
     {

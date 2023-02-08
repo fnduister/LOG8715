@@ -8,12 +8,13 @@ public class MoveEntity : ISystem
 {
     public void UpdateSystem()
     {
-        EntVitesse Speeds = (EntVitesse)CreateEntity.components["Vitesse"];
-        EntPosition Positions = (EntPosition)CreateEntity.components["Position"];
-        EntSize Sizes = (EntSize)CreateEntity.components["Size"];
+        EntVitesse Speeds = (EntVitesse)EntityManager.components["Vitesse"];
+        EntPosition Positions = (EntPosition)EntityManager.components["Position"];
+        EntSize Sizes = (EntSize)EntityManager.components["Size"];
 
         Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
+
 
 
         for (uint i = 0; i < Speeds.values.Count; i++)
@@ -30,10 +31,31 @@ public class MoveEntity : ISystem
             }
             // check if touching left wall
 
-
             Vector2 newPosition = Positions.values[i] + Time.fixedDeltaTime * Speeds.values[i];
             ECSManager.Instance.UpdateShapePosition(i, newPosition);
-            Positions.values[i] = newPosition;            
+            Positions.values[i] = newPosition;
+
+
+
+            for (uint j = i+1; j < Speeds.values.Count; j++)
+            {
+                if(j!= i)
+                {
+                    CollisionResult results = CollisionUtility.CalculateCollision(Positions.values[i], Speeds.values[i], Sizes.values[i], Positions.values[j],
+                        Speeds.values[j], Sizes.values[j]);
+
+                    if (results != null)
+                    {
+                        Debug.Log(i);
+                        Speeds.values[i] = results.velocity1;
+                        Speeds.values[j] = results.velocity2;
+                        ECSManager.Instance.UpdateShapePosition(i, results.position1);
+
+                        ECSManager.Instance.UpdateShapePosition(j, results.position2);
+                    }
+                }
+            }
+
         }
 
     }
