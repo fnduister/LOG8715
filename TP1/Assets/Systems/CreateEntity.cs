@@ -29,10 +29,11 @@ public class CreateEntity : ISystem
 
             EntPosition entPosition = new EntPosition();
             EntVitesse entVitesse = new EntVitesse();
+            EntSize entSize = new EntSize();
+
             entPosition.values = new Dictionary<uint, Vector2>();
             entVitesse.values = new Dictionary<uint, Vector2>();
-            EntSize entSize = new EntSize();
-            entPosition.values = new Dictionary<uint, Vector2>();
+            entSize.values = new Dictionary<uint, int>();
 
             uint id = 0;
             components.Add("Position", entPosition);
@@ -42,13 +43,11 @@ public class CreateEntity : ISystem
 
             foreach (var tempShape in ECSManager.Instance.Config.circleInstancesToSpawn)
             {
-                // 
                 entPosition.values.Add(id, tempShape.initialPosition);
                 entVitesse.values.Add(id, tempShape.initialVelocity);
                 entSize.values.Add(id, tempShape.initialSize);
                 ECSManager.Instance.CreateShape(id, tempShape.initialSize);
                 id++;
-
             }
 
         }

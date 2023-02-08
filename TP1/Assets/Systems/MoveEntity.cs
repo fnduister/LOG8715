@@ -1,6 +1,8 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class MoveEntity : ISystem
 {
@@ -10,24 +12,30 @@ public class MoveEntity : ISystem
         EntPosition Positions = (EntPosition)CreateEntity.components["Position"];
         EntSize Sizes = (EntSize)CreateEntity.components["Size"];
 
-        foreach (KeyValuePair<uint, Vector2> entry in Speeds.values)
+        Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+        Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
+
+
+        for (uint i = 0; i < Speeds.values.Count; i++)
         {
+            if (Positions.values[i].x + Sizes.values[i] / 2.0 > screenBounds.x || Positions.values[i].x - Sizes.values[i] / 2.0 < screenOrigo.x)
+            {
+                Speeds.values[i] = new Vector2(-Speeds.values[i].x, Speeds.values[i].y);
+            }
+
+
+            else if (Positions.values[i].y + Sizes.values[i] / 2.0 > screenBounds.y || Positions.values[i].y - Sizes.values[i] / 2.0 < screenOrigo.y)
+            {
+                Speeds.values[i] = new Vector2(Speeds.values[i].x, -Speeds.values[i].y);
+            }
             // check if touching left wall
-            if (Positions.values[entry.Key].x - Sizes.values[entry.Key] < 0)
-            {
-                Speeds.values[entry.Key] = new Vector2(entry.Value.x, -entry.Value.y);
-            }
 
-            // check if touching top wall
-            if (Positions.values[entry.Key].y - Sizes.values[entry.Key] < 0)
-            {
-                Speeds.values[entry.Key] = new Vector2(-entry.Value.x, entry.Value.y);
-            }
 
-            Vector2 newPosition = Positions.values[entry.Key] + Time.fixedDeltaTime * entry.Value;
-            ECSManager.Instance.UpdateShapePosition(entry.Key, newPosition);
-            Positions.values[entry.Key] = newPosition;
+            Vector2 newPosition = Positions.values[i] + Time.fixedDeltaTime * Speeds.values[i];
+            ECSManager.Instance.UpdateShapePosition(i, newPosition);
+            Positions.values[i] = newPosition;            
         }
+
     }
 
     private string name = "MoveEntity";
