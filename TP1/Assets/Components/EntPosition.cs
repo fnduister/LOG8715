@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vitesse : IComponent
+public struct EntPosition : IComponent
 {
-    public Dictionary<uint, Vector2> data;
+    public Dictionary<uint, Vector2> values;
 }
-

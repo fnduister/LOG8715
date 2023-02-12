@@ -20,6 +20,9 @@ public class ColorManager : ISystem
                 case EntityType.Static:
                     ECSManager.Instance.UpdateShapeColor(entry.Key, Color.red);
                     break;
+                case EntityType.Protected:
+                    ECSManager.Instance.UpdateShapeColor(entry.Key, Color.yellow);
+                    break;
             }
         }
     }
