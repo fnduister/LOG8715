@@ -4,41 +4,43 @@ using UnityEngine;
 
 public class RestoreState : ISystem
 {
-    
+
     public void UpdateSystem()
     {
-        EntRestore entRestore = (EntRestore)EntityManager.components["Restore"];
-        EntVitesse Speeds = (EntVitesse)EntityManager.components["Vitesse"];
+        EntRestore entRestore = EntityManager.restore;
+        EntSpeed Speeds = (EntSpeed)EntityManager.components["Speed"];
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
-        
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            
+
 
             if (!entRestore.activated && Speeds.saved.Count > 0)
             {
                 entRestore.activated = true;
                 entRestore.timer = Time.time;
-                for (uint i = 0; i < Speeds.values.Count; i++)
+                // DestroyEntity all shapes
+                List<uint> current_ids = new List<uint>(Sizes.values.Keys);
+                
+                foreach(uint id in current_ids)
                 {
-                
-                    Speeds.values[i] = Speeds.saved[0].speed[i];
-                
-                    Sizes.values[i] = Sizes.saved[0].size[i];
-                    Positions.values[i] = Positions.saved[0].position[i];
-                    ECSManager.Instance.UpdateShapePosition(i, Positions.saved[0].position[i]);
-                    ECSManager.Instance.UpdateShapeSize(i, Sizes.values[i]);
-                
+                    ECSManager.Instance.DestroyShape(id);
+                    EntityManager.DestroyEntity(id);
                 }
+                
+                List<uint> old_ids = new List<uint>(Sizes.saved[0].size.Keys);
+                foreach (uint i in old_ids)
+                {
 
-                Speeds.values = new Dictionary<uint, Vector2>(Speeds.saved[0].speed);
-                Positions.values = new Dictionary<uint, Vector2>(Positions.saved[0].position);
-                Sizes.values = new Dictionary<uint, int>(Sizes.saved[0].size);
+                    Debug.Log(i);
+                    Debug.Log(EntityManager.ids);
+                    EntityManager.AddEntity(EntityManager.ids++, Positions.saved[0].position[i], Speeds.saved[0].speed[i], Sizes.saved[0].size[i]);
+                }
+                
 
-                //Debug.Log(i);
             }
-            }
+
             else
             {
                 Debug.Log("Restore Mode is not avaialable now");
@@ -47,7 +49,8 @@ public class RestoreState : ISystem
             {
                 entRestore.activated = false;
             }
-    
+        }
+
     }
     private string name = "RestoreState";
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct EntSize : IComponent
 {
-    public Dictionary<uint, int> data;
+    public Dictionary<uint, int> values;
     public List<Savedsize> saved;
 }
 public struct Savedsize

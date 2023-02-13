@@ -8,13 +8,13 @@ public class SaveState : ISystem
     public void UpdateSystem()
     {
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
-        EntVitesse Speeds = (EntVitesse)EntityManager.components["Vitesse"];
+        EntSpeed Speeds = (EntSpeed)EntityManager.components["Speed"];
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
-        
+
         float current_time = Time.time;
         float delta_time = 3.0f;
-        
-        Positions.saved.Add(new SavedPositions(new Dictionary<uint, Vector2>( Positions.values), current_time));
+
+        Positions.saved.Add(new SavedPositions(new Dictionary<uint, Vector2>(Positions.values), current_time));
         Speeds.saved.Add(new Savedspeeds(new Dictionary<uint, Vector2>(Speeds.values), current_time));
         Sizes.saved.Add(new Savedsize(new Dictionary<uint, int>(Sizes.values), current_time));
 

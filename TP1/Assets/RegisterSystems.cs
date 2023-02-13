@@ -10,6 +10,7 @@ public class RegisterSystems
         // Add your systems here
         toRegister.Add(new StartGame());
         toRegister.Add(new SaveState());
+        toRegister.Add(new RestoreState());
         toRegister.Add(new MoveEntity());
         toRegister.Add(new DestroyEntity());
         toRegister.Add(new ExplodeEntity());
@@ -17,8 +18,6 @@ public class RegisterSystems
         toRegister.Add(new UpdateDurationTimer());
         toRegister.Add(new UpdateCooldownTimer());
         toRegister.Add(new ChangeProtection());
-        toRegister.Add(new SaveState());
-        toRegister.Add(new RestoreState());
 
         return toRegister;
     }
