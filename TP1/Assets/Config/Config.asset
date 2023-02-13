@@ -36,4 +36,8 @@ MonoBehaviour:
     - DestroyEntity
     - ExplodeEntity
     - ChangeProtection
-    values: 010101010101
+    - Save State
+    - UpdateDurationTimer
+    - UpdateCooldownTimer
+    - RestoreState
+    values: 01010101010101010101

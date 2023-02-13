@@ -14,7 +14,7 @@ public enum EntityType
 public class EntityManager
 {
     public static Dictionary<string, IComponent> components = new Dictionary<string, IComponent>();
-
+    public static EntRestore restore = new EntRestore();
     public EntityManager()
     {
         EntPosition entPosition = new EntPosition();
@@ -25,11 +25,16 @@ public class EntityManager
         EntProtectionDuration ProtectionDurations = new EntProtectionDuration();
         EntProtectionCooldown ProtectionCooldowns = new EntProtectionCooldown();
         EntCollision Collisions = new EntCollision();
+
         EntUpdateLeft entUpdateLeft = new EntUpdateLeft();
 
+
         entPosition.values = new Dictionary<uint, Vector2>();
+        entPosition.saved = new List<SavedPositions>();
         Speeds.values = new Dictionary<uint, Vector2>();
+        Speeds.saved = new List<Savedspeeds>();
         Sizes.values = new Dictionary<uint, int>();
+        Sizes.saved = new List<Savedsize>();
         MaxSizes.values = new Dictionary<uint, int>();
         Types.values = new Dictionary<uint, EntityType>();
         ProtectionDurations.values = new Dictionary<uint, float>();
@@ -45,7 +50,11 @@ public class EntityManager
         components.Add("ProtectionDuration", ProtectionDurations);
         components.Add("ProtectionCooldown", ProtectionCooldowns);
         components.Add("Collision", Collisions);
+
+        components.Add("Restore", restore);
+
         components.Add("UpdateLeft", entUpdateLeft);
+
 
     }
 
