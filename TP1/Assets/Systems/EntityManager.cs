@@ -19,23 +19,30 @@ public class EntityManager
         EntPosition entPosition = new EntPosition();
         EntSpeed Speeds = new EntSpeed();
         EntSize Sizes = new EntSize();
+        EntMaxSize MaxSizes = new EntMaxSize();
         EntType Types = new EntType();
         EntProtectionDuration ProtectionDurations = new EntProtectionDuration();
         EntProtectionCooldown ProtectionCooldowns = new EntProtectionCooldown();
+        EntCollision Collisions = new EntCollision();
 
         entPosition.values = new Dictionary<uint, Vector2>();
         Speeds.values = new Dictionary<uint, Vector2>();
         Sizes.values = new Dictionary<uint, int>();
+        MaxSizes.values = new Dictionary<uint, int>();
         Types.values = new Dictionary<uint, EntityType>();
         ProtectionDurations.values = new Dictionary<uint, float>();
         ProtectionCooldowns.values = new Dictionary<uint, float>();
+        Collisions.values = new Dictionary<uint, bool>();
 
         components.Add("Position", entPosition);
         components.Add("Speed", Speeds);
         components.Add("Size", Sizes);
+        components.Add("MaxSize", MaxSizes);
         components.Add("Type", Types);
         components.Add("ProtectionDuration", ProtectionDurations);
         components.Add("ProtectionCooldown", ProtectionCooldowns);
+        components.Add("Collision", Collisions);
+
     }
 
     public static uint ids { get; set; } = 0;
@@ -46,14 +53,25 @@ public class EntityManager
     {
         EntSpeed Speeds = (EntSpeed)components["Speed"];
         Speeds.values.Remove(id);
+        
         EntPosition Positions = (EntPosition)components["Position"];
         Positions.values.Remove(id);
+        
         EntSize Sizes = (EntSize)components["Size"];
         Sizes.values.Remove(id);
+        
         EntType Types = (EntType)components["Type"];
         Types.values.Remove(id);
+
+        EntMaxSize MaxSizes = (EntMaxSize)components["MaxSize"];
+        Sizes.values.Remove(id);
+        
+        EntCollision Collisions = (EntCollision)components["Collision"];
+        Collisions.values.Remove(id);
+       
         EntProtectionDuration ProtectionDurations = (EntProtectionDuration)EntityManager.components["ProtectionDuration"];
         ProtectionDurations.values.Remove(id);
+        
         EntProtectionCooldown ProtectionCooldowns = (EntProtectionCooldown)EntityManager.components["ProtectionCooldown"];
         ProtectionCooldowns.values.Remove(id);
 
@@ -66,8 +84,13 @@ public class EntityManager
         EntPosition Positions = (EntPosition)components["Position"];
         EntSize Sizes = (EntSize)components["Size"];
         EntType Types = (EntType)components["Type"];
+        EntCollision Collisions = (EntCollision)components["Collision"];
+        EntMaxSize MaxSizes = (EntMaxSize)components["MaxSize"];
+
+        Collisions.values.Add(id, false);
         Positions.values.Add(id, Position);
         Speeds.values.Add(id, Speed);
+
         if (Speed.x == 0 && Speed.y == 0)
         {
             Types.values.Add(id, EntityType.Static);
@@ -76,7 +99,9 @@ public class EntityManager
         {
             Types.values.Add(id, EntityType.Dynamic);
         }
+
         Sizes.values.Add(id, Size);
+        MaxSizes.values.Add(id, Size);
         ECSManager.Instance.CreateShape(id, Size);
     }
 }

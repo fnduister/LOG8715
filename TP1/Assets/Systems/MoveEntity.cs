@@ -13,6 +13,7 @@ public class MoveEntity : ISystem
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
         EntType Types = (EntType)EntityManager.components["Type"];
+        EntCollision Collisions = (EntCollision)EntityManager.components["Collision"];
 
         Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
@@ -46,32 +47,47 @@ public class MoveEntity : ISystem
 
                 if (results != null)
                 {
+                    Debug.Log("Collision just happened");
+
+                    Collisions.values[firstKey] = true;
+                    Collisions.values[secondKey] = true;
+
                     Speeds.values[firstKey] = results.velocity1;
                     Speeds.values[secondKey] = results.velocity2;
 
                     ECSManager.Instance.UpdateShapePosition(firstKey, results.position1);
                     ECSManager.Instance.UpdateShapePosition(secondKey, results.position2);
 
+
+
                     if (Types.values[firstKey] != EntityType.Static &&
                         Types.values[secondKey] != EntityType.Static)
                     {
-
+                        Debug.Log("key: " + firstKey + ",   Type: "+ Types.values[firstKey] + ",  Size: " + Sizes.values[firstKey]);
+                        Debug.Log("key: " + secondKey + ",   Type: "+ Types.values[secondKey] + ",  Size: " + Sizes.values[secondKey]);
                         if (Sizes.values[firstKey] < Sizes.values[secondKey])
                         {
-                            if (Types.values[firstKey] != EntityType.Protected)
+                            Debug.Log("first is smaller");
+                            if (Types.values[firstKey] != EntityType.Protected && Types.values[secondKey] != EntityType.Protected)
                             {
+                                Debug.Log("increasing first");
+
                                 Sizes.values[firstKey] += 1;
                                 ECSManager.Instance.UpdateShapeSize(firstKey, Sizes.values[firstKey]);
                             }
 
                             if (Types.values[secondKey] != EntityType.Protected)
                             {
+                                Debug.Log("decreasing second");
                                 Sizes.values[secondKey] -= 1;
                                 ECSManager.Instance.UpdateShapeSize(secondKey, Sizes.values[secondKey]);
                             }
+
+
                         }
                         else if (Sizes.values[firstKey] > Sizes.values[secondKey])
                         {
+                            Debug.Log("second is smaller");
                             if (Types.values[firstKey] != EntityType.Protected)
                             {
                                 Sizes.values[firstKey] -= 1;
@@ -83,6 +99,10 @@ public class MoveEntity : ISystem
                                 Sizes.values[secondKey] += 1;
                                 ECSManager.Instance.UpdateShapeSize(secondKey, Sizes.values[secondKey]);
                             }
+                        }
+                        else
+                        {
+
                         }
                     }
                 }

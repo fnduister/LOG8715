@@ -17,11 +17,14 @@ public class ChangeProtection : ISystem
         {
             float rd = Random.Range(0f, 100f);
 
-            if (ProtectionDurations.values.ContainsKey(id) && ProtectionDurations.values[id] <= 0)
+            if (ProtectionDurations.values.ContainsKey(id))
             {
-                ProtectionDurations.values.Remove(id);
-                ProtectionCooldowns.values.Add(id, ECSManager.Instance.Config.protectionCooldown);
-                Types.values[id] = EntityType.Dynamic;
+                if (ProtectionDurations.values[id] <= 0)
+                {
+                    ProtectionDurations.values.Remove(id);
+                    ProtectionCooldowns.values.Add(id, ECSManager.Instance.Config.protectionCooldown);
+                    Types.values[id] = EntityType.Dynamic;
+                }
             }
             else
             {
@@ -41,8 +44,7 @@ public class ChangeProtection : ISystem
                 }
 
                 if (Sizes.values[id] <= ECSManager.Instance.Config.explosionSize
-                    && Types.values[id] != EntityType.Static
-                    && Types.values[id] != EntityType.Protected
+                    && Types.values[id] == EntityType.Dynamic
                     && canUpdate)
                 {
                     if (rd < ECSManager.Instance.Config.protectionProbability * 100f)

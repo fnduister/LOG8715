@@ -55,6 +55,7 @@ public class ECSManager : MonoBehaviour
     public void CreateShape(uint id, int initialSize)
     {
         var instance = Instantiate(circlePrefab);
+        
         instance.transform.localScale *= initialSize;
         _gameObjectsForDisplay[id] = instance;
         _spriteRenderersCache.Add(id, instance.GetComponent<SpriteRenderer>()) ;

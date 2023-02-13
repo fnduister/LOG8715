@@ -14,13 +14,6 @@ public class StartGame : ISystem
             new EntityManager();
             Random.InitState(ECSManager.Instance.Config.seed);
 
-            EntPosition Positions = (EntPosition)EntityManager.components["Position"];
-            EntSpeed Speeds = (EntSpeed)EntityManager.components["Speed"];
-            EntType Types = (EntType)EntityManager.components["Type"];
-            EntSize Sizes = (EntSize)EntityManager.components["Size"];
-            EntProtectionDuration ProtectionDurations = (EntProtectionDuration)EntityManager.components["ProtectionDuration"];
-            EntProtectionCooldown ProtectionCooldowns = (EntProtectionCooldown)EntityManager.components["ProtectionCooldown"];
-
             foreach (var tempShape in ECSManager.Instance.Config.circleInstancesToSpawn)
             {
                 EntityManager.AddEntity(EntityManager.ids++, tempShape.initialPosition, tempShape.initialVelocity, tempShape.initialSize);   
