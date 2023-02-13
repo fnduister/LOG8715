@@ -7,7 +7,8 @@ public struct EntSpeed : IComponent
     public Dictionary<uint, Vector2> values;
 
     public List<Savedspeeds> saved;
-    public struct Savedspeeds
+}
+public struct Savedspeeds
 {
 
     public Dictionary<uint, Vector2> speed;
