@@ -18,18 +18,7 @@ MonoBehaviour:
   protectionProbability: 0.01
   protectionDuration: 5
   protectionCooldown: 15
-  circleInstancesToSpawn:
-  - initialSize: 7
-    initialPosition: {x: 0, y: 0}
-    initialVelocity: {x: 10, y: 20}
-  - initialSize: 8
-    initialPosition: {x: -9, y: 0}
-    initialVelocity: {x: -10, y: 20}
+  allShapesToSpawn: []
   systemsEnabled:
-    keys:
-    - StartGame
-    - MoveEntity
-    - ColorManager
-    - Save State
-    - RestoreState
-    values: 0101010101
+    keys: []
+    values: 

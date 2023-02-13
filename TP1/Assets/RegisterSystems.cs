@@ -10,10 +10,8 @@ public class RegisterSystems
         // Add your systems here
         
         toRegister.Add(new StartGame());
-        toRegister.Add(new SaveState());
         toRegister.Add(new MoveEntity());
         toRegister.Add(new ColorManager());
-        toRegister.Add(new RestoreState());
 
         return toRegister;
     }

@@ -16,24 +16,17 @@ public class StartGame : ISystem
             EntVitesse entVitesse = new EntVitesse();
             EntSize entSize = new EntSize();
             EntType entType = new EntType();
-            EntRestore entRestore = new EntRestore();
 
             entPosition.values = new Dictionary<uint, Vector2>();
-            entPosition.saved = new List<SavedPositions>();
             entVitesse.values = new Dictionary<uint, Vector2>();
-            entVitesse.saved = new List<Savedspeeds>();
             entSize.values = new Dictionary<uint, int>();
-            entSize.saved = new List<Savedsize>();
             entType.values = new Dictionary<uint, EntityType>();
-            entRestore.activated = false;
-            entRestore.timer = 0;
 
             uint id = 0;
             EntityManager.components.Add("Position", entPosition);
             EntityManager.components.Add("Vitesse", entVitesse);
             EntityManager.components.Add("Size", entSize);
             EntityManager.components.Add("Type", entType);
-            EntityManager.components.Add("Restore", entRestore);
 
 
             foreach (var tempShape in ECSManager.Instance.Config.circleInstancesToSpawn)

@@ -46,7 +46,7 @@ public class MoveEntity : ISystem
 
                     if (results != null)
                     {
-                        //Debug.Log(i);
+                        Debug.Log(i);
                         Speeds.values[i] = results.velocity1;
                         Speeds.values[j] = results.velocity2;
                         ECSManager.Instance.UpdateShapePosition(i, results.position1);
