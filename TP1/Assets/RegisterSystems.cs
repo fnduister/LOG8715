@@ -8,10 +8,14 @@ public class RegisterSystems
         var toRegister = new List<ISystem>();
 
         // Add your systems here
-        
         toRegister.Add(new StartGame());
         toRegister.Add(new MoveEntity());
+        toRegister.Add(new DestroyEntity());
+        toRegister.Add(new ExplodeEntity());
         toRegister.Add(new ColorManager());
+        toRegister.Add(new UpdateDurationTimer());
+        toRegister.Add(new UpdateCooldownTimer());
+        toRegister.Add(new ChangeProtection());
 
         return toRegister;
     }

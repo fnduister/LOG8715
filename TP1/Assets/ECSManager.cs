@@ -55,6 +55,7 @@ public class ECSManager : MonoBehaviour
     public void CreateShape(uint id, int initialSize)
     {
         var instance = Instantiate(circlePrefab);
+        
         instance.transform.localScale *= initialSize;
         _gameObjectsForDisplay[id] = instance;
         _spriteRenderersCache.Add(id, instance.GetComponent<SpriteRenderer>()) ;
@@ -133,6 +134,12 @@ public class ECSManager : MonoBehaviour
     {
         foreach (var id in _nextColorUpdate.Keys)
         {
+            if (!_spriteRenderersCache.ContainsKey(id))
+            {
+                _nextColorToDelete.Push(id);
+                continue;
+            }
+            
             var currentColor = _spriteRenderersCache[id].color;
             _spriteRenderersCache[id].color = Color.Lerp(currentColor, _nextColorUpdate[id], Time.deltaTime * ColorUpdateSpeed);
 

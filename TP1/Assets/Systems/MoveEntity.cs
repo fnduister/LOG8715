@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,62 +9,113 @@ public class MoveEntity : ISystem
 {
     public void UpdateSystem()
     {
-        EntVitesse Speeds = (EntVitesse)EntityManager.components["Vitesse"];
+        EntSpeed Speeds = (EntSpeed)EntityManager.components["Speed"];
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
+        EntType Types = (EntType)EntityManager.components["Type"];
+        EntCollision Collisions = (EntCollision)EntityManager.components["Collision"];
 
         Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
 
+        List<uint> ids = new List<uint>(Speeds.values.Keys);
 
-
-        for (uint i = 0; i < Speeds.values.Count; i++)
+        for (int i = 0; i < Speeds.values.Count; i++)
         {
-            if (Positions.values[i].x + Sizes.values[i] / 2.0 > screenBounds.x || Positions.values[i].x - Sizes.values[i] / 2.0 < screenOrigo.x)
+            uint firstKey = ids[i];
+
+            if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 < screenOrigo.x)
             {
-                Speeds.values[i] = new Vector2(-Speeds.values[i].x, Speeds.values[i].y);
+                Speeds.values[firstKey] = new Vector2(-Speeds.values[firstKey].x, Speeds.values[firstKey].y);
             }
 
 
-            else if (Positions.values[i].y + Sizes.values[i] / 2.0 > screenBounds.y || Positions.values[i].y - Sizes.values[i] / 2.0 < screenOrigo.y)
+            else if (Positions.values[firstKey].y + Sizes.values[firstKey] / 2.0 > screenBounds.y || Positions.values[firstKey].y - Sizes.values[firstKey] / 2.0 < screenOrigo.y)
             {
-                Speeds.values[i] = new Vector2(Speeds.values[i].x, -Speeds.values[i].y);
+                Speeds.values[firstKey] = new Vector2(Speeds.values[firstKey].x, -Speeds.values[firstKey].y);
             }
             // check if touching left wall
 
-            Vector2 newPosition = Positions.values[i] + Time.fixedDeltaTime * Speeds.values[i];
-            ECSManager.Instance.UpdateShapePosition(i, newPosition);
-            Positions.values[i] = newPosition;
 
 
-
-            for (uint j = i+1; j < Speeds.values.Count; j++)
+            for (int j = i + 1; j < Speeds.values.Count; j++)
             {
-                if(j!= i)
+                uint secondKey = ids[j];
+
+                CollisionResult results = CollisionUtility.CalculateCollision(Positions.values[firstKey], Speeds.values[firstKey], Sizes.values[firstKey], Positions.values[secondKey],
+                    Speeds.values[secondKey], Sizes.values[secondKey]);
+
+                if (results != null)
                 {
-                    CollisionResult results = CollisionUtility.CalculateCollision(Positions.values[i], Speeds.values[i], Sizes.values[i], Positions.values[j],
-                        Speeds.values[j], Sizes.values[j]);
+                    Debug.Log("Collision just happened");
 
-                    if (results != null)
+                    Collisions.values[firstKey] = true;
+                    Collisions.values[secondKey] = true;
+
+                    Speeds.values[firstKey] = results.velocity1;
+                    Speeds.values[secondKey] = results.velocity2;
+
+                    ECSManager.Instance.UpdateShapePosition(firstKey, results.position1);
+                    ECSManager.Instance.UpdateShapePosition(secondKey, results.position2);
+
+
+
+                    if (Types.values[firstKey] != EntityType.Static &&
+                        Types.values[secondKey] != EntityType.Static)
                     {
-                        Debug.Log(i);
-                        Speeds.values[i] = results.velocity1;
-                        Speeds.values[j] = results.velocity2;
-                        ECSManager.Instance.UpdateShapePosition(i, results.position1);
+                        Debug.Log("key: " + firstKey + ",   Type: "+ Types.values[firstKey] + ",  Size: " + Sizes.values[firstKey]);
+                        Debug.Log("key: " + secondKey + ",   Type: "+ Types.values[secondKey] + ",  Size: " + Sizes.values[secondKey]);
+                        if (Sizes.values[firstKey] < Sizes.values[secondKey])
+                        {
+                            Debug.Log("first is smaller");
+                            if (Types.values[firstKey] != EntityType.Protected && Types.values[secondKey] != EntityType.Protected)
+                            {
+                                Debug.Log("increasing first");
 
-                        ECSManager.Instance.UpdateShapePosition(j, results.position2);
+                                Sizes.values[firstKey] += 1;
+                                ECSManager.Instance.UpdateShapeSize(firstKey, Sizes.values[firstKey]);
+                            }
+
+                            if (Types.values[secondKey] != EntityType.Protected)
+                            {
+                                Debug.Log("decreasing second");
+                                Sizes.values[secondKey] -= 1;
+                                ECSManager.Instance.UpdateShapeSize(secondKey, Sizes.values[secondKey]);
+                            }
+
+
+                        }
+                        else if (Sizes.values[firstKey] > Sizes.values[secondKey])
+                        {
+                            Debug.Log("second is smaller");
+                            if (Types.values[firstKey] != EntityType.Protected)
+                            {
+                                Sizes.values[firstKey] -= 1;
+                                ECSManager.Instance.UpdateShapeSize(firstKey, Sizes.values[firstKey]);
+                            }
+
+                            if (Types.values[secondKey] != EntityType.Protected && Types.values[firstKey] != EntityType.Protected)
+                            {
+                                Sizes.values[secondKey] += 1;
+                                ECSManager.Instance.UpdateShapeSize(secondKey, Sizes.values[secondKey]);
+                            }
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
+
             }
 
+            Vector2 newPosition = Positions.values[firstKey] + Time.fixedDeltaTime * Speeds.values[firstKey];
+            ECSManager.Instance.UpdateShapePosition(firstKey, newPosition);
+            Positions.values[firstKey] = newPosition;
         }
 
     }
 
-    private string name = "MoveEntity";
+    public string Name { get; } = "MoveEntity";
 
-    public string Name   // property
-    {
-        get { return name; }   // get method
-    }
 }
