@@ -19,11 +19,11 @@ public class MoveEntity : ISystem
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
 
         List<uint> ids = new List<uint>(Speeds.values.Keys);
+        List<uint> idsToUpdate = EntityManager.IdsToUpdate();
 
-        for (int i = 0; i < Speeds.values.Count; i++)
+        //Collisions with the walls
+        foreach (uint firstKey in idsToUpdate)
         {
-            uint firstKey = ids[i];
-
             if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 < screenOrigo.x)
             {
                 Speeds.values[firstKey] = new Vector2(-Speeds.values[firstKey].x, Speeds.values[firstKey].y);
@@ -35,10 +35,13 @@ public class MoveEntity : ISystem
                 Speeds.values[firstKey] = new Vector2(Speeds.values[firstKey].x, -Speeds.values[firstKey].y);
             }
             // check if touching left wall
+        }
 
-
-
-            for (int j = i + 1; j < Speeds.values.Count; j++)
+        //Collisions between the circles
+        for(int i=0; i < Speeds.values.Count; i++)
+        {
+            uint firstKey = ids[i];
+            for (int j = i+1; j < Speeds.values.Count; j++)
             {
                 uint secondKey = ids[j];
 
@@ -108,7 +111,11 @@ public class MoveEntity : ISystem
                 }
 
             }
+        }
 
+        //Speed Update
+        foreach (uint firstKey in idsToUpdate)
+        {
             Vector2 newPosition = Positions.values[firstKey] + Time.fixedDeltaTime * Speeds.values[firstKey];
             ECSManager.Instance.UpdateShapePosition(firstKey, newPosition);
             Positions.values[firstKey] = newPosition;
