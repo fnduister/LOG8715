@@ -16,6 +16,7 @@ public class RegisterSystems
         toRegister.Add(new UpdateDurationTimer());
         toRegister.Add(new UpdateCooldownTimer());
         toRegister.Add(new ChangeProtection());
+        toRegister.Add(new MultipleUpdate());
 
         return toRegister;
     }

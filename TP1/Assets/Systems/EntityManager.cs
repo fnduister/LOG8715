@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum EntityType
 {
@@ -24,6 +25,7 @@ public class EntityManager
         EntProtectionDuration ProtectionDurations = new EntProtectionDuration();
         EntProtectionCooldown ProtectionCooldowns = new EntProtectionCooldown();
         EntCollision Collisions = new EntCollision();
+        EntUpdateLeft entUpdateLeft = new EntUpdateLeft();
 
         entPosition.values = new Dictionary<uint, Vector2>();
         Speeds.values = new Dictionary<uint, Vector2>();
@@ -33,6 +35,7 @@ public class EntityManager
         ProtectionDurations.values = new Dictionary<uint, float>();
         ProtectionCooldowns.values = new Dictionary<uint, float>();
         Collisions.values = new Dictionary<uint, bool>();
+        entUpdateLeft.values = new Dictionary<uint, int>();
 
         components.Add("Position", entPosition);
         components.Add("Speed", Speeds);
@@ -42,6 +45,7 @@ public class EntityManager
         components.Add("ProtectionDuration", ProtectionDurations);
         components.Add("ProtectionCooldown", ProtectionCooldowns);
         components.Add("Collision", Collisions);
+        components.Add("UpdateLeft", entUpdateLeft);
 
     }
 
@@ -75,6 +79,9 @@ public class EntityManager
         EntProtectionCooldown ProtectionCooldowns = (EntProtectionCooldown)EntityManager.components["ProtectionCooldown"];
         ProtectionCooldowns.values.Remove(id);
 
+        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
+        entUpdateLeft.values.Remove(id);
+
         DestroyedIds.Add(id);
     }
 
@@ -86,10 +93,12 @@ public class EntityManager
         EntType Types = (EntType)components["Type"];
         EntCollision Collisions = (EntCollision)components["Collision"];
         EntMaxSize MaxSizes = (EntMaxSize)components["MaxSize"];
+        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)components["UpdateLeft"];
 
         Collisions.values.Add(id, false);
         Positions.values.Add(id, Position);
         Speeds.values.Add(id, Speed);
+        entUpdateLeft.values.Add(id, 1);
 
         if (Speed.x == 0 && Speed.y == 0)
         {
@@ -103,5 +112,11 @@ public class EntityManager
         Sizes.values.Add(id, Size);
         MaxSizes.values.Add(id, Size);
         ECSManager.Instance.CreateShape(id, Size);
+    }
+
+    public static List<uint> IdsToUpdate()
+    {
+        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
+        return (entUpdateLeft.values).Where(counter => counter.Value > 0).Select(entry => entry.Key).ToList();
     }
 }
