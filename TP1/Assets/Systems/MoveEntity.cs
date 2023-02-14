@@ -60,6 +60,8 @@ public class MoveEntity : ISystem
 
                     ECSManager.Instance.UpdateShapePosition(firstKey, results.position1);
                     ECSManager.Instance.UpdateShapePosition(secondKey, results.position2);
+                    Positions.values[secondKey] = results.position2;
+                    Positions.values[firstKey] = results.position1;
 
 
 
