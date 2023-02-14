@@ -24,13 +24,13 @@ public class MoveEntity : ISystem
         //Collisions with the walls
         foreach (uint firstKey in idsToUpdate)
         {
-            if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 < screenOrigo.x)
+            if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].x > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].x < screenOrigo.x)
             {
                 Speeds.values[firstKey] = new Vector2(-Speeds.values[firstKey].x, Speeds.values[firstKey].y);
             }
 
 
-            else if (Positions.values[firstKey].y + Sizes.values[firstKey] / 2.0 > screenBounds.y || Positions.values[firstKey].y - Sizes.values[firstKey] / 2.0 < screenOrigo.y)
+            else if (Positions.values[firstKey].y + Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].y> screenBounds.y || Positions.values[firstKey].y - Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].y < screenOrigo.y)
             {
                 Speeds.values[firstKey] = new Vector2(Speeds.values[firstKey].x, -Speeds.values[firstKey].y);
             }
