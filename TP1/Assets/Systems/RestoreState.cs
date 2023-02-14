@@ -12,7 +12,7 @@ public class RestoreState : ISystem
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
 
 
