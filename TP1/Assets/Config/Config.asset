@@ -40,4 +40,5 @@ MonoBehaviour:
     - UpdateDurationTimer
     - UpdateCooldownTimer
     - RestoreState
-    values: 01010101010101010101
+    - MultipleUpdate
+    values: 0101010101010101010101

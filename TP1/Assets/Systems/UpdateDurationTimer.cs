@@ -6,15 +6,18 @@ public class UpdateDurationTimer : ISystem
 {
     public void UpdateSystem()
     {
-        EntSize Sizes = (EntSize)EntityManager.components["Size"];
-        EntType Types = (EntType)EntityManager.components["Type"];
         EntProtectionDuration ProtectionDurations = (EntProtectionDuration)EntityManager.components["ProtectionDuration"];
+        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
+
 
         List<uint> ids = new List<uint>(ProtectionDurations.values.Keys);
 
         foreach (uint id in ids)
         {
-            ProtectionDurations.values[id] -= Time.fixedDeltaTime;
+            for (int kUpdate=0; kUpdate<entUpdateLeft.values[id]; kUpdate++)
+            {
+                ProtectionDurations.values[id] -= Time.fixedDeltaTime;
+            }
         }
     }
 

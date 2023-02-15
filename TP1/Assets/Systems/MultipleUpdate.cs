@@ -6,25 +6,6 @@ public class MultipleUpdate : ISystem
 {
     public void UpdateSystem()
     {
-        List<uint> toUpdate = EntityManager.IdsToUpdate();
-        if (toUpdate.Count==0){
-            checkPositions();
-        } else
-        {
-            EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
-            foreach(uint id in toUpdate)
-            {
-                entUpdateLeft.values[id]-=1;
-            }
-        }
-
-    }
-
-    public string Name { get; } = "MultipleUpdate";
-
-    public void checkPositions(){
-        //Vector3 cameraPos = Camera.main.transform.position;
-        //Vector3 screenMiddle = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, cameraPos.z));
         Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width/2, Screen.height));
         EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
         EntPosition Positions = (EntPosition)EntityManager.components["Position"];
@@ -39,6 +20,9 @@ public class MultipleUpdate : ISystem
             {
                 entUpdateLeft.values[id]=1;
             }
-        }
+        }        
+
     }
+
+    public string Name { get; } = "MultipleUpdate";
 }
