@@ -14,6 +14,7 @@ public class MoveEntity : ISystem
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
         EntType Types = (EntType)EntityManager.components["Type"];
         EntCollision Collisions = (EntCollision)EntityManager.components["Collision"];
+        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
 
         Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
@@ -24,34 +25,48 @@ public class MoveEntity : ISystem
         for(int i=0; i < Speeds.values.Count; i++)
         {
             uint firstKey = ids[i];
-
-            if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 < screenOrigo.x)
+            int maxUpdate = entUpdateLeft.values[firstKey];
+            if (!ECSManager.Instance.Config.SystemsEnabled["MultipleUpdate"])
             {
-                Speeds.values[firstKey] = new Vector2(-Speeds.values[firstKey].x, Speeds.values[firstKey].y);
+                maxUpdate=1;
             }
-
-
-            else if (Positions.values[firstKey].y + Sizes.values[firstKey] / 2.0 > screenBounds.y || Positions.values[firstKey].y - Sizes.values[firstKey] / 2.0 < screenOrigo.y)
+            for (int kUpdate=0; kUpdate<maxUpdate; kUpdate++)
             {
-                Speeds.values[firstKey] = new Vector2(Speeds.values[firstKey].x, -Speeds.values[firstKey].y);
-            }
-            for (int j = i+1; j < Speeds.values.Count; j++)
-            {
-                uint secondKey = ids[j];
 
-                CollisionResult results = CollisionUtility.CalculateCollision(Positions.values[firstKey], Speeds.values[firstKey], Sizes.values[firstKey], Positions.values[secondKey],
-                    Speeds.values[secondKey], Sizes.values[secondKey]);
+                //Collisions with the walls
+                if (Positions.values[firstKey].x + Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].x > screenBounds.x || Positions.values[firstKey].x - Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].x < screenOrigo.x)
+                {
+                    Speeds.values[firstKey] = new Vector2(-Speeds.values[firstKey].x, Speeds.values[firstKey].y);
+                }
+
+
+                else if (Positions.values[firstKey].y + Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].y> screenBounds.y || Positions.values[firstKey].y - Sizes.values[firstKey] / 2.0 + Time.fixedDeltaTime * Speeds.values[firstKey].y < screenOrigo.y)
+                {
+                    Speeds.values[firstKey] = new Vector2(Speeds.values[firstKey].x, -Speeds.values[firstKey].y);
+                }
+                // check if touching left wall
+            
+
+                //Collisions between the circles
+                for (int j = i+1; j < Speeds.values.Count; j++)
+                {
+                    uint secondKey = ids[j];
+
+                    CollisionResult results = CollisionUtility.CalculateCollision(Positions.values[firstKey], Speeds.values[firstKey], Sizes.values[firstKey], Positions.values[secondKey],
+                        Speeds.values[secondKey], Sizes.values[secondKey]);
 
                 if (results != null)
                 {
                     Collisions.values[firstKey] = true;
                     Collisions.values[secondKey] = true;
 
-                    Speeds.values[firstKey] = results.velocity1;
-                    Speeds.values[secondKey] = results.velocity2;
+                        Speeds.values[firstKey] = results.velocity1;
+                        Speeds.values[secondKey] = results.velocity2;
 
-                    ECSManager.Instance.UpdateShapePosition(firstKey, results.position1);
-                    ECSManager.Instance.UpdateShapePosition(secondKey, results.position2);
+                        ECSManager.Instance.UpdateShapePosition(firstKey, results.position1);
+                        ECSManager.Instance.UpdateShapePosition(secondKey, results.position2);
+                        Positions.values[secondKey] = results.position2;
+                        Positions.values[firstKey] = results.position1;
 
 
 

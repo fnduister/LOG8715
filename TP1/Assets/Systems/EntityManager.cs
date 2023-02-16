@@ -124,9 +124,5 @@ public class EntityManager
         ECSManager.Instance.CreateShape(id, Size);
     }
 
-    public static List<uint> IdsToUpdate()
-    {
-        EntUpdateLeft entUpdateLeft = (EntUpdateLeft)EntityManager.components["UpdateLeft"];
-        return (entUpdateLeft.values).Where(counter => counter.Value > 0).Select(entry => entry.Key).ToList();
-    }
+
 }
