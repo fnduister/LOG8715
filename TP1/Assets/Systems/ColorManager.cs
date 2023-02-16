@@ -10,18 +10,19 @@ public class ColorManager : ISystem
     public void UpdateSystem()
     {
         EntSize Sizes = (EntSize)EntityManager.components["Size"];
-        EntType entTypes = (EntType)EntityManager.components["Type"];
+        EntType Types = (EntType)EntityManager.components["Type"];
         EntCollision Collisions = (EntCollision)EntityManager.components["Collision"];
         EntMaxSize MaxSizes = (EntMaxSize)EntityManager.components["MaxSize"];
 
-        foreach (KeyValuePair<uint, EntityType> entry in entTypes.values)
+        foreach (KeyValuePair<uint, EntityType> entry in Types.values)
         {
             switch (entry.Value)
             {
+                case EntityType.Clicked:
                 case EntityType.Dynamic:
                     if (Sizes.values[entry.Key] == MaxSizes.values[entry.Key] - 1)
                     {
-                        ECSManager.Instance.UpdateShapeColor(entry.Key, new Color(159, 0, 104));
+                        ECSManager.Instance.UpdateShapeColor(entry.Key, new Color(255 / 255f, 100 / 255f, 0));
                     }
                     else
                     {
@@ -36,7 +37,14 @@ public class ColorManager : ISystem
                         }
                         else
                         {
-                            ECSManager.Instance.UpdateShapeColor(entry.Key, Color.blue);
+                            if (entry.Value == EntityType.Clicked)
+                            {
+                                ECSManager.Instance.UpdateShapeColor(entry.Key, new Color(255 / 255f, 0 / 255f, 100 / 255f));
+                            }
+                            else
+                            {
+                                ECSManager.Instance.UpdateShapeColor(entry.Key, Color.blue);
+                            }
                         }
                     }
                     break;
@@ -46,6 +54,8 @@ public class ColorManager : ISystem
                 case EntityType.Protected:
                     ECSManager.Instance.UpdateShapeColor(entry.Key, Color.yellow);
                     break;
+                //    ECSManager.Instance.UpdateShapeColor(entry.Key, new Color(255 / 255f, 0 / 255f, 100 / 255f));
+                //    break;
             }
         }
     }

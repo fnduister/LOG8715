@@ -21,12 +21,12 @@ MonoBehaviour:
   circleInstancesToSpawn:
   - initialSize: 4
     initialPosition: {x: -8, y: -8}
-    initialVelocity: {x: 8, y: 8}
+    initialVelocity: {x: 4, y: 4}
   - initialSize: 11
-    initialPosition: {x: 0, y: 0}
-    initialVelocity: {x: 8, y: -8}
+    initialPosition: {x: -5, y: 8}
+    initialVelocity: {x: 4, y: -4}
   - initialSize: 5
-    initialPosition: {x: 8, y: 8}
+    initialPosition: {x: 3, y: 3}
     initialVelocity: {x: 0, y: 0}
   systemsEnabled:
     keys:
@@ -40,4 +40,6 @@ MonoBehaviour:
     - UpdateDurationTimer
     - UpdateCooldownTimer
     - RestoreState
-    values: 01010101010101010101
+    - HandleClick
+    - MultipleUpdate
+    values: 010101010101010101010101

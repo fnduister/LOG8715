@@ -8,7 +8,8 @@ public enum EntityType
 {
     Static,
     Protected,
-    Dynamic
+    Dynamic,
+    Clicked
 }
 
 public class EntityManager

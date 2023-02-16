@@ -44,7 +44,7 @@ public class ChangeProtection : ISystem
                 }
 
                 if (Sizes.values[id] <= ECSManager.Instance.Config.explosionSize
-                    && Types.values[id] == EntityType.Dynamic
+                    && (Types.values[id] == EntityType.Dynamic || Types.values[id] == EntityType.Clicked)
                     && canUpdate)
                 {
                     if (rd < ECSManager.Instance.Config.protectionProbability * 100f)

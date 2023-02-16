@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.UI;
 using UnityEngine;
 
 /*
@@ -25,6 +26,7 @@ public class ECSManager : MonoBehaviour
     private readonly Dictionary<uint, float> _lastColorUpdate = new();
     private readonly Dictionary<uint, Color> _nextColorUpdate = new();
     private readonly Stack<uint> _nextColorToDelete = new();
+    private bool InputStatus = false;
     #endregion
 
     #region Singleton
@@ -57,9 +59,17 @@ public class ECSManager : MonoBehaviour
         var instance = Instantiate(circlePrefab);
         
         instance.transform.localScale *= initialSize;
+        instance.name = id.ToString();
         _gameObjectsForDisplay[id] = instance;
         _spriteRenderersCache.Add(id, instance.GetComponent<SpriteRenderer>()) ;
         _lastColorUpdate.Add(id, 0);
+    }
+
+    public bool getInputStatus() { return InputStatus; }
+
+    public void UpdateInputStatus()
+    {
+        InputStatus = false;
     }
 
     public void DestroyShape(uint id)
@@ -119,7 +129,7 @@ public class ECSManager : MonoBehaviour
             Config.SystemsEnabled[system.Name] = true;
         }
     }
-    
+
     // Update is called once per frame
     private void FixedUpdate()
     {
@@ -145,6 +155,16 @@ public class ECSManager : MonoBehaviour
 
             if (currentColor == _nextColorUpdate[id])
                 _nextColorToDelete.Push(id);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!InputStatus)
+            {
+                Debug.Log("Should be only called once");
+
+                InputStatus = true;
+            }
         }
 
         while (_nextColorToDelete.Count > 0)
