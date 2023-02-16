@@ -24,7 +24,12 @@ public class MoveEntity : ISystem
         for (int i=0; i < Speeds.values.Count; i++)
         {
             uint firstKey = ids[i];
-            for (int kUpdate=0; kUpdate<entUpdateLeft.values[firstKey]; kUpdate++)
+            int maxUpdate = entUpdateLeft.values[firstKey];
+            if (!ECSManager.Instance.Config.SystemsEnabled["MultipleUpdate"])
+            {
+                maxUpdate=1;
+            }
+            for (int kUpdate=0; kUpdate<maxUpdate; kUpdate++)
             {
 
                 //Collisions with the walls

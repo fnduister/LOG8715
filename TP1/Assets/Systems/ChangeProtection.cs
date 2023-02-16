@@ -16,7 +16,12 @@ public class ChangeProtection : ISystem
 
         foreach (uint id in ids)
         {
-            for (int kUpdate=0; kUpdate<entUpdateLeft.values[id]; kUpdate++)
+            int maxUpdate = entUpdateLeft.values[id];
+            if (!ECSManager.Instance.Config.SystemsEnabled["MultipleUpdate"])
+            {
+                maxUpdate=1;
+            }
+            for (int kUpdate=0; kUpdate<maxUpdate; kUpdate++)            
             {
                 float rd = Random.Range(0f, 100f);
 
